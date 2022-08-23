@@ -1,17 +1,46 @@
 class robot{
   
+  float xco;
+  float yco;
+  color lichaamkleur;
+  color vierkant;
+  float size;
+  float x;
+  float bx;
+  float by;
+  float angle;
+  int direction;
+  int boxSize;
+  int radius;
+  
+  
+  robot(){ // default constructor
+    xco = 0;
+    yco = 0;
+    lichaamkleur = color(230);
+    vierkant = color(255,0,0);
+    size = 1;
+    x = 375;
+    bx = 400;
+    by = 100;
+    angle = 0.0;
+    direction = 1;
+    boxSize = 200;
+    radius = 10;
+  }
+  
 void tekening() {
-  bx = 400;
-  by = 100; 
   ellipseMode(CENTER);
   strokeWeight(4);
   fill(230);
   
   //bewegende armen
-  x += speed * direction;
+  x += 1.5 * direction;
   if ((x > 450) || (x < 375)) {
     direction = -direction;
   }
+
+  
   
   //lichaam
   rect(185+xco,x-40+yco,150,80);
@@ -33,7 +62,7 @@ void tekening() {
   translate(1000/2+xco,430+yco);
   rotate(angle);
   strokeWeight(10);
-  fill(255,0,0);
+  fill(vierkant);
   rect(-70,-70,140,140);
   angle+=0.1;
   pop();
@@ -44,43 +73,34 @@ void tekening() {
   //ogen
   ellipseMode(RADIUS);
     fill(230);
-    rect(bx, by, boxSize, boxSize);
+    rect(bx+xco, by+yco, boxSize, boxSize);
     fill(255);
-  ellipse(bx+50,by+50,20,20);
-  ellipse(bx+150,by+50,20,20);
+  ellipse(bx+xco+50,yco+by+50,20,20);
+  ellipse(bx+xco+150,yco+by+50,20,20);
     fill(0);
-  ellipse(bx+50,by+50,radius,radius);
-  ellipse(bx+150,by+50,radius,radius);
-  line(bx+100,by+200,500+xco,300+yco);
+  ellipse(bx+xco+50,yco+by+50,radius,radius);
+  ellipse(bx+xco+150,yco+by+50,radius,radius);
     fill(0,0,255);
-}
 
+  //kogel
+  push();
+  image(images[nummer],xco + 800 + myvijand.bulletX-25, yco + x -25 ,50,50);
+  pop();
+
+}
 void muisgedrukt() { //ogen groter worden
   if (mousePressed == true ){
     radius++;
-  if(overBox) { 
-    locked = true; 
-    fill(255, 255, 255);
-  } 
-  
-  else {
-    locked = false;
-  }
   
   if (radius == 100){
     radius = 10;
-  }
-  
-  xOffset = mouseX-bx;
-  yOffset = mouseY-by;
+    }
   }
 }
 
 void loslaten() { //ogen verkleinen
   if (mousePressed == false ) {
-  locked = false;
   radius = 10;
-  s = 1;
   }
 }
 
