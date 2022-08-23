@@ -17,42 +17,31 @@ PImage vrouw;
 Serial myPort;
 char val;
 
-  int b;
-  float bx;
-  float by;
-  float angle = 0.0;
-  int boxSize = 200;
-  boolean overBox = false;
-  boolean locked = false;
-  float xOffset = 0.0; 
-  float yOffset = 0.0; 
-  int radius = 10;
-  int radius2 = 40;
-  float x = 375;
-  float speed = 1;
-  int direction = 1;
-  float xco =0;
-  float yco =0;
-  int s = 1;
   int score = 0;
   int levens = 9;
-  float bulletX = 0;
-  float bulletY = 0;
-  boolean schiet = false;
-  boolean bullet = true;
-  float vijandX = 2000;
-  float vijandY= 500;
-  boolean vijand = true;
+  int textx = 0;
+  
   float temperatuur;
+  PImage[] images;
+  PImage theekop;
+  PImage theelepel;
+  PImage bord;
+  int nummer;
+  
 
 void setup() {
   size(2000, 1000);
-  achtergrond = loadImage("hangaar.jpg");
+  achtergrond = loadImage("interieur.jpg");
   vrouw = loadImage("vrouw.jpg");
+  images = new PImage[3];
+  images[0]=loadImage("theekop.jpg");
+  images[1]=loadImage("theelepel.jpg");
+  images[2]=loadImage("bord.jpg");
+  nummer = int(random(0,3));
   
-  println(Serial.list());
-  String portName = Serial.list()[2];
-  myPort = new Serial(this, portName, 9600);
+  //println(Serial.list());
+  //String portName = Serial.list()[2];
+  //myPort = new Serial(this, portName, 9600);
   
   gunshot = new SoundFile(this, "gunshot.wav");
   muziekje = new SoundFile(this, "muziekje.wav");
@@ -68,7 +57,7 @@ void setup() {
   temperatuur = main.getInt("temp") -272.15;
 }
 
-void draw() {
+void draw() { 
   image (achtergrond, 0, 0);
   myrobot.tekening();
   myrobot.muisgedrukt();
@@ -76,7 +65,21 @@ void draw() {
   myrobot.bewegenschieten();
   myvijand.lichaam();
   myTimer.countDown();
+  myvijand.schiet();
+  myvijand.raak();
   
+  push();
+    textSize(40);
+    fill(255);
+    text("Je hebt de taart van de boze oma opgegeten. Gelukkig ligt haar oud servies op tafel om te je beschermen.",1800,800+textx);
+    text("Je moet haar 75 keer raken voor ze dood is. Doe dit voor de tijd uitloopt of voor ze 10 keer te dichtbij komt.",1800,850+textx);
+    text("bewegen doe je met de pijltjes en schieten doe je met spatiebalk of de drukknop op de arduino.",1700,900+textx);
+    text("good luck, press 'spacebar' to start",1200,950+textx);
+  pop();
+  
+  if (textx==5000){
+    myTimer = new Timer(100);
+  }
   //text
   fill(0, 0, 255);
   textAlign(RIGHT);
@@ -90,13 +93,6 @@ void draw() {
   fill(255,255,0);
   text("temperatuur Antwerpen:  "+ round(temperatuur)+"°C",1900,200);
   
-  //kogel
-  push();
-  fill(230);
-  stroke(230);
-  ellipse(xco + 800 + bulletX ,yco + x + bulletY, 15 , 15 );
-  pop();
-  
   //als je dood gaat
   if (myTimer.getTime() <=0 || levens <= 0){
     background(250,0,0);
@@ -105,27 +101,20 @@ void draw() {
     textAlign(CENTER);
     text("Game Over",1000,400);
     text("jouw score: " +  score,1000,800);
-    vijand = false;
+    myvijand.vijand = false;
   }
-  //schieten
-  if (keyPressed == true && key ==' '){
-    schiet = true;
-  }
-  if (schiet == true){
-    bulletX = bulletX + 30;
-  }
-  if (bulletX == 30 ){
-    gunshot.play();
-  }
-  if (bulletX > 1200){
-    bulletX = 0;
-    schiet = false;
+  if (score >= 70){
+    background(0,0,255);
+    textSize(100);
+    fill(0);
+    textAlign(CENTER);
+    text("Proficiat, je hebt de oma verslagen!",1000,400);
   }
   //arduino
-   if ( myPort.available() > 0) {
-    val = myPort.readChar();
-    if(val=='a'){
-      schiet = true;
-    }
-   }
+  // if ( myPort.available() > 0) {
+    //val = myPort.readChar();
+    //if(val=='a'){
+      //schiet = true;
+    //}
+   //}
 }  
